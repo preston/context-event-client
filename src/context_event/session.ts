@@ -1,12 +1,10 @@
-import { ClientEvent } from "./client_event";
-
 export class ContextEventSession {
 
-	publish(event: ClientEvent) {
+  publish() {
 
-	}
+  }
 
-	subscribe(channel: string, ) {
+  subscribe(channel: string,) {
 
-	}
+  }
 }
