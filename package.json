@@ -1,0 +1,13 @@
+{
+  "name": "context-event-client",
+  "version": "0.0.1",
+  "description": "Client library for Context Event Service implementations.",
+  "repository": "https://github.com/preston/context-event-client",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "rxjs": "^6.1.0",
+    "rxjs-compat": "^6.1.0"
+  }
+}
