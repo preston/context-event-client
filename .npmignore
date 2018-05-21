@@ -1,5 +1,5 @@
 e2e/
-src/
+lib/
 .editorconfig
 .git
 .gitignore
