@@ -1,0 +1,9 @@
+e2e/
+src/
+.editorconfig
+.git
+.gitignore
+angular.json
+README.md
+tsconfig.json
+tslint.json
