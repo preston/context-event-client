@@ -1,9 +1,9 @@
 {
   "name": "context-event-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Client library for the Context Event Service.",
   "main": "dist/index.js",
-  "types" : "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "rxjs": "^6.1.0"
   },
@@ -19,7 +19,10 @@
     "url": "git+https://github.com/preston/context-event-client.git"
   },
   "keywords": [],
-  "author": "",
+  "contributors": [
+    {"name": "Preston Lee"},
+    {"name": "Parker Lawson"}
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/preston/context-event-client/issues"
