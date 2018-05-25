@@ -1,21 +1,18 @@
 export abstract class EventModel {
-  person_id: string;
-  topic_uri: string;
-  model_uri: string;
-  agent_uri: string;
-  parameters: any;
+  person_id: string = '';
+  topic_uri: string = '';
+  model_uri: string = '';
+  agent_uri: string = '';
+  parameters: any = {};
 }
 
 export abstract class JWTResponse {
-  jwt: string;
-  authorization: string;
+  jwt: string = '';
+  authorization: string = '';
 }
-class CES {
+export class CES {
   url: string = 'http://context-event-service.prestonlee.com';
-  token: JWTResponse;
-  constructor(){
-
-  }
+  token: JWTResponse = {jwt:'',authorization:''};
   send (event: EventModel) {
     return new Promise((resolve, reject) => {
       if(!this.token){
@@ -31,7 +28,7 @@ class CES {
       }
     });
   }
-  sendRequest(event, token){
+  sendRequest(event: any, token: JWTResponse){
     return new Promise((resolve, reject) => {
       fetch(this.url + '/events', {
         method: 'POST',
@@ -48,7 +45,7 @@ class CES {
     });
   };
   getJWT(){
-    return new Promise((resolve, reject) => {
+    return new Promise<JWTResponse>((resolve, reject) => {
       fetch(this.url + '/sessions', {
         method: 'POST',
         body: JSON.stringify(event),
@@ -66,5 +63,3 @@ class CES {
     });
   }
 }
-
-export default CES;
