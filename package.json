@@ -1,6 +1,6 @@
 {
   "name": "context-event-client",
-  "version": "0.1.1",
+  "version": "0.1.7",
   "description": "Client library for the Context Event Service.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
