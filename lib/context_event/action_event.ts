@@ -9,5 +9,6 @@ export class ActionEvent extends BaseEvent {
 	public controller_uri: string = '';
 	public action_uri: string = '';
 	public model_uri: string = '';
+	public parameters: any = '';
 
 }
