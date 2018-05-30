@@ -2,6 +2,7 @@ export abstract class EventModel {
   person_id: string = '';
   topic_uri: string = '';
   model_uri: string = '';
+  controller_uri: string = '';
   agent_uri: string = '';
   parameters: any = {};
 }
