@@ -1,11 +1,4 @@
-export abstract class EventModel {
-  person_id: string = '';
-  topic_uri: string = '';
-  model_uri: string = '';
-  controller_uri: string = '';
-  agent_uri: string = '';
-  parameters: any = {};
-}
+import { ActionEvent } from './context_event/action_event';
 
 export abstract class JWTResponse {
   jwt: string = '';
@@ -13,8 +6,8 @@ export abstract class JWTResponse {
 }
 export class CES {
   url: string = 'http://context-event-service.prestonlee.com';
-  token: JWTResponse = {jwt:'',authorization:''};
-  send (event: EventModel) {
+  token: JWTResponse = { jwt:'', authorization:'' };
+  send (event: ActionEvent) {
     return new Promise((resolve, reject) => {
       if(!this.token.jwt){
         this.getJWT().then((token: JWTResponse) => {
