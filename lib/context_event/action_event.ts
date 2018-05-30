@@ -1,6 +1,4 @@
-import { BaseEvent } from "./base_event";
-
-export class ActionEvent extends BaseEvent {
+export class ActionEvent {
 
 	public static EVENT_TYPE_ACTION: string = 'artaka://events/action';
 
