@@ -1,17 +1,18 @@
 {
   "name": "context-event-client",
-  "version": "0.1.7",
+  "version": "0.1.9",
   "description": "Client library for the Context Event Service.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@types/eventsource": "^1.0.1",
     "rxjs": "^6.1.0"
   },
   "devDependencies": {
     "typescript": "^2.8.3"
   },
   "scripts": {
-    "build": "tsc -t ES2017 -m commonjs --types -d --sourceMap --strict",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,8 +21,12 @@
   },
   "keywords": [],
   "contributors": [
-    {"name": "Preston Lee"},
-    {"name": "Parker Lawson"}
+    {
+      "name": "Preston Lee"
+    },
+    {
+      "name": "Parker Lawson"
+    }
   ],
   "license": "ISC",
   "bugs": {

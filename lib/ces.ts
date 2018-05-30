@@ -15,7 +15,7 @@ export class CES {
   token: JWTResponse = {jwt:'',authorization:''};
   send (event: EventModel) {
     return new Promise((resolve, reject) => {
-      if(!this.token){
+      if(!this.token.jwt){
         this.getJWT().then((token: JWTResponse) => {
           this.sendRequest(event, token).then((response) => {
             resolve(response);
