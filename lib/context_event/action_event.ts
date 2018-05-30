@@ -7,7 +7,6 @@ export class ActionEvent extends BaseEvent {
 	public type: string = ActionEvent.EVENT_TYPE_ACTION;
 	public topic_uri: string = '';
 	public controller_uri: string = '';
-	public action_uri: string = '';
 	public model_uri: string = '';
 	public parameters: any = '';
 
