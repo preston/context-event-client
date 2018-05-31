@@ -1,15 +1,15 @@
 {
   "name": "context-event-client",
-  "version": "0.1.15",
+  "version": "0.1.18",
   "description": "Client library for the Context Event Service.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
     "@types/eventsource": "^1.0.1",
-    "rxjs": "^6.1.0"
+    "rxjs": "^6.2.0"
   },
   "devDependencies": {
-    "typescript": "^2.8.3"
+    "typescript": "^2.8.4"
   },
   "scripts": {
     "build": "tsc",
