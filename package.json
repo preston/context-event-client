@@ -1,6 +1,6 @@
 {
   "name": "context-event-client",
-  "version": "0.1.18",
+  "version": "0.1.21",
   "description": "Client library for the Context Event Service.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,7 +9,9 @@
     "rxjs": "^6.2.0"
   },
   "devDependencies": {
-    "typescript": "^2.8.4"
+    "@angular/core": "^6.0.3",
+    "typescript": "^2.8.4",
+    "zone.js": "^0.8.26"
   },
   "scripts": {
     "build": "tsc",

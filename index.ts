@@ -4,3 +4,4 @@ export { HintEvent } from "./lib/context_event/hint_event";
 export { ContextEventService } from "./lib/context_event/service";
 export { ContextEventSession } from "./lib/context_event/session";
 export { CES, JWTResponse } from "./lib/ces";
+export { CESService } from "./lib/ces.angular";
