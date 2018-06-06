@@ -2,14 +2,14 @@
 import { NgModule } from '@angular/core';
 
 // Directives
-import { cesMouseSingleClick } from './directives/cesMouseSingleClick';
+import { cesEvent } from './directives/cesEvent';
 
 @NgModule({
 	declarations: [
-		cesMouseSingleClick,
+		cesEvent,
 	],
 	exports: [
-		cesMouseSingleClick
+		cesEvent
 	],
 	providers: []
 })

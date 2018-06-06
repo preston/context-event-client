@@ -5,5 +5,5 @@ export { ContextEventService } from "./lib/context_event/service";
 export { ContextEventSession } from "./lib/context_event/session";
 export { CES, JWTResponse } from "./lib/ces";
 export { CESService } from "./lib/ces.angular";
-export { cesMouseSingleClick } from "./lib/directives/cesMouseSingleClick";
+export { cesEvent } from "./lib/directives/cesEvent";
 export { CESModule } from "./lib/ces.module";
