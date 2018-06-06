@@ -13,7 +13,10 @@ export class cesEvent {
 	changeTopics = [
 		'file-picker'
 	];
-	selectTopics = [];
+	textSelectTopics = [];
+	focusTopics = [
+		'data-input-component'
+	];
 	controllerName: string = '';
 	constructor(private ces: CESService, private _view: ViewContainerRef) {}
 	ngOnInit(){
@@ -30,6 +33,11 @@ export class cesEvent {
 	}
 	@HostListener('change') onChange() {
 		if(this.changeTopics.includes(this.topic)){
+			this.sendEvent();
+		}
+	}
+	@HostListener('focus') onFocus() {
+		if(this.focusTopics.includes(this.topic)){
 			this.sendEvent();
 		}
 	}
