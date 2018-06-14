@@ -1,12 +1,13 @@
 {
   "name": "context-event-client",
-  "version": "0.2.0",
-  "description":"Client library for the Context Event Service.",
+  "version": "0.3.21",
+  "description": "Client library for the Context Event Service.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
     "@types/eventsource": "^1.0.1",
-    "rxjs": "^6.2.0"
+    "event-source-polyfill": "0.0.12",
+    "rxjs": "^5.5.11"
   },
   "devDependencies": {
     "@angular/core": "^6.0.3",

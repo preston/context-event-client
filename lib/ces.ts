@@ -1,12 +1,45 @@
 import { ActionEvent } from './context_event/action_event';
+import 'event-source-polyfill/src/eventsource.min.js';
+import { Observable } from "rxjs/Observable";
+import { Observer } from "rxjs/Observer";
+import { Subject } from "rxjs/Subject";
+import 'rxjs/add/operator/multicast';
+import 'rxjs/add/operator/concat';
+import 'rxjs/add/observable/from';
+declare var EventSourcePolyfill: any;
 
 export abstract class JWTResponse {
   jwt: string = '';
   authorization: string = '';
 }
+
+export abstract class SubscriptionGlob {
+  topic_uri: string = '';
+  model_uri: string = '';
+  controller_uri: string = '';
+}
+
 export class CES {
-  url: string = 'http://context-event-service.prestonlee.com';
-  token: JWTResponse = { jwt:'', authorization:'' };
+  private url: string = 'http://context-event-service.prestonlee.com';
+  private token: JWTResponse = { jwt:'', authorization:'' };
+  private eventStreamSubject: Subject<any> = new Subject();
+  private events: Observable<any> = Observable.from([]);
+
+  constructor(){}
+
+  initialize(channels: string[]): Promise <Subject<any>>{
+    return new Promise((resolve, reject) => {
+      this.requestEvents(channels).then((serverEvents: Observable <any>) => {
+        this.events.concat(serverEvents)
+          .multicast(this.eventStreamSubject)
+          .connect();
+        resolve(this.eventStreamSubject);
+      });
+    });
+  }
+  getEventStream(){
+    return this.eventStreamSubject;
+  }
   send (event: ActionEvent) {
     return new Promise((resolve, reject) => {
       if(!this.token.jwt){
@@ -22,7 +55,7 @@ export class CES {
       }
     });
   }
-  sendRequest(event: any, token: JWTResponse){
+  private sendRequest(event: any, token: JWTResponse){
     return new Promise((resolve, reject) => {
       fetch(this.url + '/events', {
         method: 'POST',
@@ -38,7 +71,7 @@ export class CES {
       });
     });
   };
-  getJWT(){
+  private getJWT(): Promise <JWTResponse>{
     return new Promise<JWTResponse>((resolve, reject) => {
       fetch(this.url + '/sessions', {
         method: 'POST',
@@ -56,4 +89,57 @@ export class CES {
       });
     });
   }
+  private createObservableOfEvents(token: JWTResponse, channels: string[]): Observable <any>{
+    return Observable.create( (observer: Observer <any>) => {
+      let connection = new EventSourcePolyfill('http://context-event-service.prestonlee.com/stream?channels=' + channels.join(), {
+        headers: {
+          'Authorization': token.authorization
+        }
+      });
+      connection.onopen = (event: any) => {
+        observer.next(event)
+      };
+      connection.onmessage = (event: any) => {
+        observer.next(event)
+      };
+      connection.onerror = (event: any) => {
+        observer.next(event)
+      };
+      return () => {
+        connection.close();
+      };
+    });
+  }
+  private requestEvents(channels: string[]): Promise <Observable <any>>{
+    return new Promise((resolve, reject) => {
+      if(!this.token.jwt){
+        this.getJWT().then((token: JWTResponse) => {
+          resolve(this.createObservableOfEvents(token, channels));
+        });
+      } else {
+        resolve(this.createObservableOfEvents(this.token, channels));
+      }
+    });
+  }
+  private filterSubscription(): Subject <any> {
+    return this.eventStreamSubject;
+  }
+}
+export function eventFilter(terms: string[], value: any) {
+  if(value.data){
+    let event = JSON.parse(value.data);
+    for(let term of terms){
+      if(event.topic_uri && event.topic_uri.match(term)){
+        return true;
+      }
+      if(event.model_uri && event.model_uri.match(term)){
+        return true;
+      }
+      if(event.controller_uri && event.controller_uri.match(term)){
+        return true;
+      }
+    }
+    return false;
+  }
+  return true;
 }
