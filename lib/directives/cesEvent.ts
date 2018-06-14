@@ -13,7 +13,9 @@ export class cesEvent {
 	changeTopics = [
 		'file-picker'
 	];
-	textSelectTopics = [];
+	textSelectTopics = [
+	  'select-value'
+  ];
 	focusTopics = [
 		'data-input-component'
 	];
@@ -38,6 +40,11 @@ export class cesEvent {
 	}
 	@HostListener('focus') onFocus() {
 		if(this.focusTopics.includes(this.topic)){
+			this.sendEvent();
+		}
+	}
+	@HostListener('selectionchange') onTextSelect() {
+		if(this.textSelectTopics.includes(this.topic)){
 			this.sendEvent();
 		}
 	}
