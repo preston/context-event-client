@@ -6,6 +6,7 @@ import { Subject } from "rxjs/Subject";
 import 'rxjs/add/operator/multicast';
 import 'rxjs/add/operator/concat';
 import 'rxjs/add/observable/from';
+
 declare var EventSourcePolyfill: any;
 
 export abstract class JWTResponse {
@@ -129,17 +130,22 @@ export function eventFilter(terms: string[], value: any) {
   if(value.data){
     let event = JSON.parse(value.data);
     for(let term of terms){
-      if(event.topic_uri && event.topic_uri.match(term)){
-        return true;
+      if(event.topic_uri){
+        return glob(event.topic_uri, term);
       }
-      if(event.model_uri && event.model_uri.match(term)){
-        return true;
+      if(event.model_uri){
+        return glob(event.model_uri, term);
       }
-      if(event.controller_uri && event.controller_uri.match(term)){
-        return true;
+      if(event.controller_uri){
+        return glob(event.controller_uri, term);
       }
     }
     return false;
   }
   return true;
+}
+
+function glob(input:string, pattern:string) {
+  let re = new RegExp(pattern.replace(/([.?+^$[\]\\(){}|\/-])/g, "\\$1").replace(/\*/g, '.*'));
+  return re.test(input);
 }
