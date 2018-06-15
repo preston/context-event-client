@@ -1,6 +1,8 @@
 import { Directive, HostListener, Input, ViewContainerRef, OnInit } from '@angular/core';
 import { ActionEvent } from "../context_event/action_event";
 import { CESService } from "../ces.angular";
+import {Subject} from "rxjs/Subject";
+import 'rxjs/add/operator/debounceTime';
 @Directive({
 	selector: '[cesEvent]'
 })
@@ -20,10 +22,14 @@ export class cesEvent {
 		'data-input-component'
 	];
 	controllerName: string = '';
+  private selectionSubject = new Subject<any>();
+  private selectionObservable = this.selectionSubject.asObservable().debounceTime(300);
 	constructor(private ces: CESService, private _view: ViewContainerRef) {}
 	ngOnInit(){
 		let component = (<any> this._view)._view.component;
-		this.controllerName = component.constructor.name
+		this.controllerName = component.constructor.name;
+		// Use observables to debounce text selection events.
+    this.selectionObservable.subscribe((text: string) => this.sendSelectionEvent(text));
 	}
 	@Input('cesEvent') modelUri: string = '';
 	@Input('cesParameters') parameters: any;
@@ -43,11 +49,21 @@ export class cesEvent {
 			this.sendEvent();
 		}
 	}
-	@HostListener('selectionchange') onTextSelect() {
+	@HostListener('document:selectionchange') onTextSelect() {
 		if(this.textSelectTopics.includes(this.topic)){
-			this.sendEvent();
+      this.selectionSubject.next();
 		}
 	}
+
+	sendSelectionEvent(text: string) {
+    const sel = document.getSelection();
+    const selectedText = sel.rangeCount ? sel.getRangeAt(0).toString() : null;
+    if(selectedText) {
+      console.log("selectedText:", selectedText);
+      this.parameters = { text: selectedText };
+    }
+    this.sendEvent();
+  }
 
 	sendEvent() {
 		this.ces.send(new ActionEvent(
