@@ -1,9 +1,7 @@
 export class ActionEvent {
 
-	public static EVENT_TYPE_ACTION: string = 'artaka://events/action';
 	public static EVENT_TOPIC_PREFIX: string = 'http://www.ke.tu-darmstadt.de/ontologies/ui_detail_level.owl#';
 
-	public type: string = ActionEvent.EVENT_TYPE_ACTION;
 	public topic_uri: string = '';
 	public controller_uri: string = '';
 	public model_uri: string = '';
