@@ -14,19 +14,17 @@ export abstract class JWTResponse {
   authorization: string = '';
 }
 
-export abstract class SubscriptionGlob {
-  topic_uri: string = '';
-  model_uri: string = '';
-  controller_uri: string = '';
-}
-
 export class CES {
-  private url: string = 'http://context-event-service.prestonlee.com';
+  private readonly url: string = 'http://ces.artaka.org';
   private token: JWTResponse = { jwt:'', authorization:'' };
   private eventStreamSubject: Subject<any> = new Subject();
   private events: Observable<any> = Observable.from([]);
 
-  constructor(){}
+  constructor(private urlIn: string = ''){
+    if(urlIn){
+      this.url = urlIn;
+    }
+  }
 
   initialize(channels: string[]): Promise <Subject<any>>{
     return new Promise((resolve, reject) => {
@@ -92,7 +90,7 @@ export class CES {
   }
   private createObservableOfEvents(token: JWTResponse, channels: string[]): Observable <any>{
     return Observable.create( (observer: Observer <any>) => {
-      let connection = new EventSourcePolyfill('http://context-event-service.prestonlee.com/stream?channels=' + channels.join(), {
+      let connection = new EventSourcePolyfill(this.url + '/stream?channels=' + channels.join(), {
         headers: {
           'Authorization': token.authorization
         }
