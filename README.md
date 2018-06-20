@@ -50,6 +50,14 @@ ces.send({
       parameters: {"name" : "CES App" }
     });
     ```
+#####Custom CES Endpoint
+By default, the library uses the CES public event endpoint. However, It is possible to specify a specific CES url for other instances. It is a simple, optional constructor argument you can include when creating the `CES` object.
+
+```js
+import { CES, ActionEvent } from "context-event-client";
+
+let ces = new CES('http://any-CES-url.com/');
+```
 
 ## Use with Angular
 This library comes bundled with an Angular `@Injectible` service for your convenience. Here is an example of using it in your `app.component.ts` and sending an 'Application Started' event to CES.
