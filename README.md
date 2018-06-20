@@ -30,22 +30,26 @@ ces.send({
 ## Usage
 
 1. Ensure you have types installed for EventSource
+  
+    ```npm install @types/eventsource --save```
+  
+2. Install Context Event Client
+  
+    ```npm install context-event-client --save```
 
-  ```npm install @types/eventsource --save```
-
-2. Use anywhere:
-
-  ```js
-  import { CES, ActionEvent } from "context-event-client";
-
-  let ces = new CES();
-  ces.send({
-    topic_uri: "load",
-    controller_uri: "protocol://controllers/app",
-    model_uri: "data://app/data",
-    parameters: {"name" : "CES App" }
-  });
-  ```
+3. Use anywhere:
+  
+    ```js
+    import { CES, ActionEvent } from "context-event-client";
+  
+    let ces = new CES();
+    ces.send({
+      topic_uri: "load",
+      controller_uri: "protocol://controllers/app",
+      model_uri: "data://app/data",
+      parameters: {"name" : "CES App" }
+    });
+    ```
 
 ## Use with Angular
 This library comes bundled with an Angular `@Injectible` service for your convenience. Here is an example of using it in your `app.component.ts` and sending an 'Application Started' event to CES.
