@@ -56,7 +56,7 @@ export class cesEvent {
 	}
 
 	sendSelectionEvent(text: string) {
-    const sel = document.getSelection();
+    const sel = window.getSelection();
     const selectedText = sel.rangeCount ? sel.getRangeAt(0).toString() : null;
     if(selectedText) {
       console.log("selectedText:", selectedText);
