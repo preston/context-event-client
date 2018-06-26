@@ -60,7 +60,43 @@ let ces = new CES('http://any-CES-url.com/');
 ```
 
 ## Use with Angular
-This library comes bundled with an Angular `@Injectible` service for your convenience. Here is an example of using it in your `app.component.ts` and sending an 'Application Started' event to CES.
+
+#### Attribute Directive
+It is possible to use our html attribute directive instead of filling your controller logic with send event method calls.
+Using a combination of attributes you can send an event from html. The following attributes are currently supported:
+
+Attribute | Description
+:--- | :---
+`cesEvent` | Set this equal to the `model_uri` of the event.
+`cesParameters` | Set equal to the parameters you want to send with this event.
+`cesTopic` | Set this equal to the topic URI. We only support a specific subset of the [ui_detail_level](http://www.ke.tu-darmstadt.de/ontologies/ui_detail_level.owl) ontology at this time.
+
+The `cesTopic` attribute must be one of the supported ui_details_level elements, as this is how Angular knows what element event to send the event on. For example, if you want top send an event when the user clicks a specific element,
+you would use an ontology element that is configured to respond with `OnClick` events of the host element. The following table shows which ontology items are valid, and what event they listen for.
+
+Native Event | Acceptable Ontology Items
+:--- | :---
+`OnClick` | `view`, `load`, `create-information-object`
+`OnChange` | `file-picker`
+`OnTextSelection` | `select-value` 
+`OnFocus` | `data-input-component` 
+
+Putting this all together, if yuo wanted to send an event when the user clicks a button, you might do something like this:
+
+```html
+<input type="button" 
+  class="login-btn" 
+  value="Click to Login" 
+  [cesEvent]="myapp://login/button"
+  [cesTopic]="view"
+  [cesParameters]="{username:'username87'}"
+/>
+```
+
+You might be asking, what about the `controller_uri`? The directive automatically detects which controller handles the html where your attributes reside. It fills this in for you when it sends the event.
+
+#### Injectible Service
+This library also comes bundled with an Angular `@Injectible` service for your convenience. Here is an example of using it in your `app.component.ts` and sending an 'Application Started' event to CES.
 ```typescript
 import { Component, OnInit } from '@angular/core';
 import { CESService, ActionEvent } from "context-event-client";
