@@ -9,14 +9,23 @@ import 'rxjs/add/operator/debounceTime';
 export class cesEvent {
 	clickTopics = [
 		'view',
-		'load',
+		'mouse-click',
+		'mouse-single-click',
+		'mouse-double-click',
 		'create-information-object',
+    'selectable-item'
+	];
+  loadTopics = [
+		'load',
 	];
 	changeTopics = [
-		'file-picker'
+		'file-picker',
+    'alter-information-object',
+    'input-information',
 	];
 	textSelectTopics = [
-	  'select-value'
+	  'select-value',
+	  'selectable-data-representation'
   ];
 	focusTopics = [
 		'data-input-component'
@@ -36,6 +45,11 @@ export class cesEvent {
 	@Input('cesTopic') topic: any;
 	@HostListener('click') onClick() {
 		if(this.clickTopics.includes(this.topic)){
+			this.sendEvent();
+		}
+	}
+	@HostListener('document:load') onLoad() {
+		if(this.loadTopics.includes(this.topic)){
 			this.sendEvent();
 		}
 	}
@@ -68,7 +82,7 @@ export class cesEvent {
 	sendEvent() {
 		this.ces.send(new ActionEvent(
 			this.topic,
-			"knartwork://controllers/"+ this.controllerName,
+			"application://controllers/" + this.controllerName,
 			this.modelUri,
 			this.parameters
 		));

@@ -2,6 +2,7 @@
 
 Framework-agnostic client library for the [Context Event Service](https://github.com/preston/context-event-service)
 
+
 ##Concepts
 
 All URIs associated with this library represent an identification but not necessarily a location. It is recommended that users of the library spend some time analyzing their application in order to uniquely name section and data model. Consistency is key, but `controller_uri` and `model_uri` are open ended fields.
@@ -43,6 +44,7 @@ ces.send({
     import { CES, ActionEvent } from "context-event-client";
   
     let ces = new CES();
+    // Send an event
     ces.send({
       topic_uri: "load",
       controller_uri: "protocol://controllers/app",
@@ -50,7 +52,7 @@ ces.send({
       parameters: {"name" : "CES App" }
     });
     ```
-#####Custom CES Endpoint
+####Custom CES Endpoint
 By default, the library uses the CES public event endpoint. However, It is possible to specify a specific CES url for other instances. It is a simple, optional constructor argument you can include when creating the `CES` object.
 
 ```js
@@ -76,12 +78,13 @@ you would use an ontology element that is configured to respond with `OnClick` e
 
 Native Event | Acceptable Ontology Items
 :--- | :---
-`OnClick` | `view`, `load`, `create-information-object`
-`OnChange` | `file-picker`
-`OnTextSelection` | `select-value` 
+`OnClick` | `view`, `mouse-click`, `mouse-single-click`, `mouse-double-click`, `create-information-object`, `selectable-item`
+`OnLoad` | `load`
+`OnChange` | `file-picker`, `alter-information-object`, `input-information`
+`OnTextSelection` | `select-value`, `selectable-data-representation` 
 `OnFocus` | `data-input-component` 
 
-Putting this all together, if yuo wanted to send an event when the user clicks a button, you might do something like this:
+Putting this all together, if you wanted to send an event when the user clicks a button, you might do something like this:
 
 ```html
 <input type="button" 
@@ -120,6 +123,37 @@ export class AppComponent implements OnInit {
   }
 }
 ```
+
+## Receiving Events
+
+As you send events asynchronously to the CES backend, agents will begin to send back events you can use to orchestrate interactivity in your front end. 
+To connect to a stream of events, you can easily subscribe using channels. A channel can be a stream of any type of events exposed by agents on the backend, but for 
+any client to access this stream of events, you must pass in an array of channels you wish to subscribe to. Channel names are loosely defined and are set by backend agents.
+However, for the front end, you can subscribe to channel names that match previously sent topic_uri, model_uri, or controller_uri. Other backend agents may expose additional channels 
+you can subscribe to, however, those would be documented by the CES backend.
+
+The following is an example of how to subscribe and filter events with this library:
+
+```js
+import { CES, ActionEvent, eventFilter } from "context-event-client";
+let ces = new CES();
+// Here we subscribe to text selection events from the UI Ontology, and we also subscribe to any events related to the app controller.
+ces.initialize(['http://www.ke.tu-darmstadt.de/ontologies/ui_detail_level.owl#select-value', 'application://controller/app']); // Array of channel names
+    ces.getEventStream()
+      // Here we can use any RxJs operators!
+      .filter((event) => {
+        // eventFilter is a tool provided by this library that you can use to filter incoming events using glob patterns.
+        // Here we filter for any incoming events related to text selection, and any events with a model, controller, or topic URI that starts with 'application'.
+        return eventFilter(['application*', 'select-value*'], event);
+      })
+      .subscribe((event)=>{
+        console.info('Event received: ', event);
+    });
+```
+
+Because the library hands you events in the form of observables, you can manipulate and iterate over events with all of the power of RxJs operators. You can also
+assign specific observables that subscribe and filter different channels or keywords. This allows front end developers maximum flexibility for handling incoming events.
+
 
 [NPM Package](https://www.npmjs.com/package/context-event-client) |
 [GitHub](https://github.com/preston/context-event-client) |
