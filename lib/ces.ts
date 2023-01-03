@@ -1,8 +1,7 @@
 import { ActionEvent } from './context_event/action_event';
 import 'event-source-polyfill/src/eventsource.min.js';
-import { Observable } from "rxjs/Observable";
-import { Observer } from "rxjs/Observer";
-import { Subject } from "rxjs/Subject";
+
+import { concat, connect, multicast, Observable, Observer, Subject } from "rxjs";
 import 'rxjs/add/operator/multicast';
 import 'rxjs/add/operator/concat';
 import 'rxjs/add/observable/from';
@@ -15,20 +14,23 @@ export abstract class JWTResponse {
 }
 
 export class CES {
-  private readonly url: string = 'http://ces.artaka.org';
-  private token: JWTResponse = { jwt:'', authorization:'' };
+  private readonly url: string = 'http://ces.prestonlee.com';
+  private token: JWTResponse = { jwt: '', authorization: '' };
   private eventStreamSubject: Subject<any> = new Subject();
-  private events: Observable<any> = Observable.from([]);
+  private events: Observable<any> = Observable.create([]);
 
-  constructor(private urlIn: string = ''){
-    if(urlIn){
+  constructor(private urlIn: string = '') {
+    if (urlIn) {
       this.url = urlIn;
     }
   }
 
-  initialize(channels: string[]): Promise <Subject<any>>{
+  initialize(channels: string[]): Promise<Subject<any>> {
     return new Promise((resolve, reject) => {
-      this.requestEvents(channels).then((serverEvents: Observable <any>) => {
+      this.requestEvents(channels).then((serverEvents: Observable<any>) => {
+        // this.events.
+// let tmp =         concat(this.events, serverEvents);
+// connect(tmp,);
         this.events.concat(serverEvents)
           .multicast(this.eventStreamSubject)
           .connect();
@@ -36,12 +38,12 @@ export class CES {
       });
     });
   }
-  getEventStream(){
+  getEventStream() {
     return this.eventStreamSubject;
   }
-  send (event: ActionEvent) {
+  send(event: ActionEvent) {
     return new Promise((resolve, reject) => {
-      if(!this.token.jwt){
+      if (!this.token.jwt) {
         this.getJWT().then((token: JWTResponse) => {
           this.sendRequest(event, token).then((response) => {
             resolve(response);
@@ -54,12 +56,12 @@ export class CES {
       }
     });
   }
-  private sendRequest(event: any, token: JWTResponse){
+  private sendRequest(event: any, token: JWTResponse) {
     return new Promise((resolve, reject) => {
       fetch(this.url + '/events', {
         method: 'POST',
         body: JSON.stringify(event),
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': token.authorization
         }
@@ -70,12 +72,12 @@ export class CES {
       });
     });
   };
-  private getJWT(): Promise <JWTResponse>{
+  private getJWT(): Promise<JWTResponse> {
     return new Promise<JWTResponse>((resolve, reject) => {
       fetch(this.url + '/sessions', {
         method: 'POST',
         body: JSON.stringify(event),
-        headers:{
+        headers: {
           'Content-Type': 'application/json'
         }
       }).then((response: Response) => {
@@ -88,8 +90,8 @@ export class CES {
       });
     });
   }
-  private createObservableOfEvents(token: JWTResponse, channels: string[]): Observable <any>{
-    return Observable.create( (observer: Observer <any>) => {
+  private createObservableOfEvents(token: JWTResponse, channels: string[]): Observable<any> {
+    return Observable.create((observer: Observer<any>) => {
       let connection = new EventSourcePolyfill(this.url + '/stream?channels=' + channels.join(), {
         headers: {
           'Authorization': token.authorization
@@ -109,9 +111,9 @@ export class CES {
       };
     });
   }
-  private requestEvents(channels: string[]): Promise <Observable <any>>{
+  private requestEvents(channels: string[]): Promise<Observable<any>> {
     return new Promise((resolve, reject) => {
-      if(!this.token.jwt){
+      if (!this.token.jwt) {
         this.getJWT().then((token: JWTResponse) => {
           resolve(this.createObservableOfEvents(token, channels));
         });
@@ -119,22 +121,23 @@ export class CES {
         resolve(this.createObservableOfEvents(this.token, channels));
       }
     });
-  }
-  private filterSubscription(): Subject <any> {
+  }Í
+  private filterSubscription(): Subject<any> {
     return this.eventStreamSubject;
   }
 }
+
 export function eventFilter(terms: string[], value: any) {
-  if(value.data){
+  if (value.data) {
     let event = JSON.parse(value.data);
-    for(let term of terms){
-      if(event.topic_uri){
+    for (let term of terms) {
+      if (event.topic_uri) {
         return glob(event.topic_uri, term);
       }
-      if(event.model_uri){
+      if (event.model_uri) {
         return glob(event.model_uri, term);
       }
-      if(event.controller_uri){
+      if (event.controller_uri) {
         return glob(event.controller_uri, term);
       }
     }
@@ -143,7 +146,7 @@ export function eventFilter(terms: string[], value: any) {
   return true;
 }
 
-function glob(input:string, pattern:string) {
+function glob(input: string, pattern: string) {
   let re = new RegExp(pattern.replace(/([.?+^$[\]\\(){}|\/-])/g, "\\$1").replace(/\*/g, '.*'));
   return re.test(input);
 }
