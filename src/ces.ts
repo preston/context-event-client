@@ -17,7 +17,7 @@ export class CES {
   private readonly url: string = 'http://ces.prestonlee.com';
   private token: JWTResponse = { jwt: '', authorization: '' };
   private eventStreamSubject: Subject<any> = new Subject();
-  private events: Observable<any> = Observable.create([]);
+  private events: Observable<any> = new Observable();
 
   constructor(private urlIn: string = '') {
     if (urlIn) {
@@ -29,12 +29,12 @@ export class CES {
     return new Promise((resolve, reject) => {
       this.requestEvents(channels).then((serverEvents: Observable<any>) => {
         // this.events.
-// let tmp =         concat(this.events, serverEvents);
-// connect(tmp,);
-        this.events.concat(serverEvents)
-          .multicast(this.eventStreamSubject)
-          .connect();
-        resolve(this.eventStreamSubject);
+        // let tmp =         concat(this.events, serverEvents);
+        // connect(tmp,);
+        // this.events.concat(serverEvents)
+        //   .multicast(this.eventStreamSubject)
+        //   .connect();
+        // resolve(this.eventStreamSubject);
       });
     });
   }
@@ -121,7 +121,7 @@ export class CES {
         resolve(this.createObservableOfEvents(this.token, channels));
       }
     });
-  }Í
+  }
   private filterSubscription(): Subject<any> {
     return this.eventStreamSubject;
   }
